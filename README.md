@@ -4,7 +4,7 @@ Appointments, recalls, treatment plans, notes and account balances in a database
 
 | Do it yourself | We customise it | We run it for you |
 |---|---|---|
-| Free code. Install and operate it. Your hosting and agent costs remain yours. | Your fields, practice rules, screens and Core Practice data mapping. [Book a call](https://enterprisedna.co/omni/book?offer=replace-software&utm_campaign=core-practice&utm_medium=github). | Installed and operated through Omni by Enterprise DNA. One setup fee, then a retainer. [The offer](https://enterprisedna.co/omni/instead-of/core-practice). |
+| Free code. Install and operate it. Your hosting and agent costs remain yours. | Your fields, practice rules, screens and Core Practice data mapping. [Book a call](https://enterprisedna.co/omni/book?offer=replace-software&utm_campaign=core-practice&utm_medium=github). | Installed and operated through Omni by Enterprise DNA. One setup fee, then a retainer. [The offer](https://enterprisedna.co/omni/instead-of/core-practice?utm_source=github&utm_medium=readme&utm_campaign=core-practice). |
 
 ## Quick start
 
