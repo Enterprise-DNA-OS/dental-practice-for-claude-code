@@ -5,6 +5,7 @@ import {createHash,randomUUID} from 'node:crypto';
 import {pathToFileURL} from 'node:url';
 import {getDb,REPO_ROOT} from './lib/db.mjs';
 import {parseCsv,pick} from './lib/csv.mjs';
+import {table} from './lib/format.mjs';
 
 export const TABLES=['patients','providers','appointments','plans','plan_items','notes','recalls','invoices','receipts','contacts'];
 export const READS={
@@ -55,5 +56,11 @@ export async function run(db,args){const {opt:o,pos}=options(args);const [comman
  if(command==='draft-weekly'){const content=[];for(const c of ['attention','plan-followup','debtors'])content.push(`## ${c}\n\n${format(await db.query(READS[c]))}`);const dir=path.join(process.env.OUTPUT_DIR||REPO_ROOT,'drafts');fs.mkdirSync(dir,{recursive:true});const out=o.out?path.resolve(required(o,'out')):path.join(dir,'weekly-'+randomUUID()+'.md');fs.writeFileSync(out,'# Draft practice review\n\nFictional data when using the demo. Review before sharing.\n\n'+content.join('\n\n')+'\n',{flag:'wx',mode:0o600});return {file:out,sent:false};}
  throw Error('Unknown command: '+command);
 }
-export function format(value){if(!Array.isArray(value))return JSON.stringify(value,null,2);if(!value.length)return '(none)';const cols=Object.keys(value[0]).filter(k=>!['id','record_id','source_key'].includes(k));const cell=(r,k)=>{const v=r[k];return String(v instanceof Date?v.toISOString():v??'').replace(/\s+/g,' ');};return [cols.join(' | '),cols.map(()=> '---').join(' | '),...value.map(r=>cols.map(k=>cell(r,k)).join(' | '))].join('\n');}
+export function format(value){
+ if(!Array.isArray(value))return JSON.stringify(value,null,2);
+ if(!value.length)return '(none)';
+ const cols=Object.keys(value[0]).filter(k=>!['id','record_id','source_key'].includes(k));
+ return table(value,cols.map(k=>({key:k,label:k.replace(/_cents$/,'').replaceAll('_',' '),format:(v,row)=>{if(v===null||v===undefined)return '';if(k.endsWith('_cents'))return `${row.currency||''} ${(Number(v)/100).toFixed(2)}`.trim();return String(v instanceof Date?v.toISOString():v).replace(/\s+/g,' ');}})));
+}
+
 if(process.argv[1]&&import.meta.url===pathToFileURL(path.resolve(process.argv[1])).href){let db;try{db=await getDb();const args=process.argv.slice(2);const result=await run(db,args);console.log(args.includes('--json')?JSON.stringify(result,null,2):format(result));}catch(e){console.error(e.message);process.exitCode=1;}finally{await db?.close();}}

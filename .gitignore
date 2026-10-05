@@ -11,3 +11,8 @@ Thumbs.db
 views/*.html
 docs-out/
 feeds/
+
+# Private exports and import staging files
+exports/
+imports/
+private-*.json
