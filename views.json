@@ -1,13 +1,28 @@
 [
   {
     "name": "week",
-    "title": "This week",
-    "subtitle": "Dental Practice for Claude Code: what needs attention, rendered by npm run view",
+    "title": "Practice week",
+    "subtitle": "Read-only practice records. Appointment times are local to the practice.",
     "sections": [
       {
-        "title": "Needs attention",
-        "note": "TODO(author): point this at the industry's attention view (overdue, stuck, quiet).",
-        "sql": "select 'replace me' as item, 'TODO(author)' as why"
+        "title": "Appointments",
+        "sql": "select day,starts,minutes,patient,provider,location,status,reason from dental.day_book where day between current_date and current_date+7 order by day,starts"
+      },
+      {
+        "title": "Recalls",
+        "sql": "select patient,due_on,days_overdue,reason,next_booking,missed_visits from dental.recall_queue order by due_on"
+      },
+      {
+        "title": "Plans",
+        "sql": "select code,patient,title,status,age_days,fee_cents,currency,next_booking from dental.plan_followup order by age_days desc"
+      },
+      {
+        "title": "Overdue accounts",
+        "sql": "select code,patient,due_on,currency,balance_cents from dental.balances where balance_cents>0 and due_on<current_date order by due_on"
+      },
+      {
+        "title": "Record checks",
+        "sql": "select rule,patient,issue,source from dental.compliance_gaps order by rule,patient"
       }
     ]
   }

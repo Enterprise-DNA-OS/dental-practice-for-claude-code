@@ -1,11 +1,66 @@
 [
   {
-    "name": "example",
-    "title": "TODO(author): the first document this industry must produce",
-    "for_each": "select gen_random_uuid() as id, 'Example' as name",
+    "name": "treatment-plan",
+    "title": "DRAFT treatment plan",
+    "for_each": "select id,code from dental.plans order by code",
+    "file": "code",
+    "sections": [
+      {
+        "title": "Recorded plan",
+        "sql": "select code,patient,provider,title,status,consent_on,consent_ref,currency,fee_cents from dental.plan_followup where id=$1",
+        "note": "A record of the treating practitioner's plan. Not a generated treatment recommendation or consent form."
+      },
+      {
+        "title": "Items",
+        "sql": "select item_code,description,tooth,surface,fee_cents,completed_on from dental.plan_items where plan_id=$1 order by created_at,id"
+      }
+    ]
+  },
+  {
+    "name": "statement",
+    "title": "DRAFT account statement",
+    "for_each": "select id,name from dental.patients order by name",
     "file": "name",
     "sections": [
-      { "title": "Details", "sql": "select 'replace me' as item, $1::text as record_id" }
+      {
+        "title": "Invoices and recorded receipts",
+        "sql": "select b.code,b.issued_on,b.due_on,b.currency,b.total_cents,b.received_cents,b.balance_cents from dental.balances b join dental.invoices i on i.id=b.id where i.patient_id=$1 order by b.issued_on",
+        "note": "Accounting record only. No payment or health fund claim is processed."
+      }
+    ]
+  },
+  {
+    "name": "patient-record",
+    "title": "DRAFT patient record extract",
+    "for_each": "select id,name from dental.patients order by name",
+    "file": "name",
+    "sections": [
+      {
+        "title": "Patient",
+        "sql": "select external_id,name,dob,medical_reviewed_on from dental.patients where id=$1"
+      },
+      {
+        "title": "Notes and corrections",
+        "sql": "select recorded_on,author,body,corrects_id,correction_reason from dental.notes where patient_id=$1 order by created_at,id",
+        "note": "Includes prior notes and every correction. No entries are replaced."
+      },
+      {
+        "title": "Appointments",
+        "sql": "select day,starts,status,reason from dental.appointments where patient_id=$1 order by day,starts"
+      }
+    ]
+  },
+  {
+    "name": "recall-letter",
+    "title": "DRAFT recall letter",
+    "for_each": "select r.id,p.name from dental.recalls r join dental.patients p on p.id=r.patient_id where r.status='due' order by r.due_on",
+    "file": "name",
+    "sections": [
+      {
+        "title": "Recall details",
+        "sql": "select patient,due_on,reason from dental.recall_queue where id=$1",
+        "note": "Please contact the practice to discuss a suitable appointment. Staff must check the record and contact preference before sharing. Nothing is sent."
+      }
     ]
   }
 ]

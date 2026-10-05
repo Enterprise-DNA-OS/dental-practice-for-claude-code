@@ -1,0 +1,42 @@
+[
+  [
+    "Which overdue recalls have no future booking?",
+    "unscheduled-recalls"
+  ],
+  [
+    "Which recall patients also have missed visits?",
+    "recalls-due"
+  ],
+  [
+    "Which proposed plans have been waiting longest?",
+    "plan-followup"
+  ],
+  [
+    "Which plans have no next appointment?",
+    "unbooked-plans"
+  ],
+  [
+    "Which providers carry the booked minutes this week?",
+    "provider-week"
+  ],
+  [
+    "Which completed visits have no recorded note?",
+    "compliance"
+  ],
+  [
+    "Which accepted plans lack recorded consent evidence?",
+    "compliance"
+  ],
+  [
+    "Which upcoming patients have no medical history review recorded?",
+    "compliance"
+  ],
+  [
+    "Which overdue accounts still have a balance after recorded receipts?",
+    "debtors"
+  ],
+  [
+    "What was originally written before a patient note was corrected?",
+    "patient CP001"
+  ]
+]
